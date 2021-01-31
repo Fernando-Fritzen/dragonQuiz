@@ -1,4 +1,8 @@
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+
 import db from '../db.json';
 import Widget from '../src/components/Widget';
 import QuizBackground from '../src/components/QuizBackground';
@@ -23,11 +27,15 @@ export const QuizContainer = styled.div`
   }
 `;
 
-
-
 export default function Home() {
-  return(
+  const router = useRouter();
+  const [name, setName] = React.useState('');
+
+  return (
     <QuizBackground backgroundImage={db.bg}>
+      <Head>
+        <title>AluraQuiz - Modelo base</title>
+      </Head>
       <QuizContainer>
         <Widget>
           <Widget.Header>
@@ -35,13 +43,32 @@ export default function Home() {
 
           </Widget.Header>
           <Widget.Content>
-              <p>lorem ipsum dolor simet...</p>
+            <form onSubmit={function (infosDoEvento) {
+              infosDoEvento.preventDefault();
+              router.push(`/quiz?name=${name}`);
+              console.log('Fazendo uma submissão');
+            }}
+            >
+              <input
+                onChange={function (infosDoEvento) {
+                  console.log(infosDoEvento.target.value);
+
+                  // name = infosDoEvento.target.value;
+                  setName(infosDoEvento.target.value);
+                }}
+                placeholder="Diz aí seu nome"
+              />
+              <button type="submit" disabled={name.length === 0}>
+                Jogar
+                {name}
+              </button>
+            </form>
           </Widget.Content>
         </Widget>
-          
+
         <Widget>
           <Widget.Header>
-            <h1>The legend of zelda</h1>
+            <h1>Quiz da galera</h1>
           </Widget.Header>
           <Widget.Content>
             <p>lorem ipsum dolor simet...</p>
@@ -52,5 +79,5 @@ export default function Home() {
       </QuizContainer>
       <GitHubCorner projectUrl="https://github.com/Fernando-Fritzen" />
     </QuizBackground>
-  )
+  );
 }
